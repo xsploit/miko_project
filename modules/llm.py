@@ -1,26 +1,50 @@
 # -*- coding: utf-8 -*-
 """
 LLM interface module for Miko AI VTuber
-Handles Ollama communication with OpenAI-compatible optimizations from reference llm_scr.py
+Provides multi-provider LLM via OpenAI-compatible API (OpenAI, OpenRouter, Gemini proxy, Ollama),
+with provider params loaded from miko_config.yaml.
 """
 import ollama
 import os
+import yaml
 from openai import OpenAI
 
 
 class LLMInterface:
-    def __init__(self, model=None):
-        from .config import config
-        self.config = config
+    def __init__(self, model=None, yaml_path: str = "miko_config.yaml"):
+        self.yaml_path = yaml_path
+        self.yaml_config = self._load_yaml()
         
-        # Get model from YAML config (what setup GUI saves to)
+        # Determine default model
         if model is None:
-            ollama_config = config.get_ollama_config()
-            self.model = ollama_config.get('selected_model') or config.default_model
+            self.model = self._get_default_model()
         else:
             self.model = model
         
         print(f"🤖 LLM initialized with model: {self.model}")
+
+    def _load_yaml(self):
+        try:
+            if os.path.exists(self.yaml_path):
+                with open(self.yaml_path, 'r', encoding='utf-8') as f:
+                    return yaml.safe_load(f) or {}
+        except Exception as e:
+            print(f"⚠️ Failed to load YAML config: {e}")
+        return {}
+
+    def _get_default_model(self) -> str:
+        try:
+            provider = self.yaml_config.get('provider')
+            providers = self.yaml_config.get('providers', {})
+            if provider and provider in providers:
+                model = providers.get(provider, {}).get('model')
+                if model:
+                    return model
+            if 'ollama' in providers and providers['ollama'].get('model'):
+                return providers['ollama']['model']
+        except Exception:
+            pass
+        return 'hf.co/subsectmusic/qwriko3-4b-instruct-2507:Q4_K_M'
         
     def chat_streaming(self, conversation):
         """Streaming chat with Ollama - EXACT from working reference"""
@@ -48,9 +72,9 @@ class LLMInterface:
         """
         try:
             # Get provider config from YAML
-            yaml_config, provider_config = self.config.get_provider_config()
-            if provider:
-                provider_config = yaml_config.get('providers', {}).get(provider, provider_config)
+            yaml_config = self.yaml_config or {}
+            current_provider = provider or yaml_config.get('provider', 'ollama')
+            provider_config = yaml_config.get('providers', {}).get(current_provider, {})
             
             # Create OpenAI-compatible client with provider settings
             client = OpenAI(
@@ -89,7 +113,7 @@ class LLMInterface:
                 }
                 
                 # Add provider-specific parameters
-                current_provider = yaml_config.get('provider', 'ollama')
+                current_provider = current_provider
                 
                 if current_provider == 'ollama':
                     # Ollama-specific optimizations (env vars can still override)
@@ -163,8 +187,7 @@ class LLMInterface:
                 
         except Exception as e:
             print(f"LLM Error: {e}")
-            personality = self.config.load_personality()
-            return personality.get("error_message", "Oops! Something went wrong with my brain!")
+            return "Oops! Something went wrong with my brain!"
     
     def _chat_openai_stream(self, client, messages, provider_config):
         """Streaming version with provider-specific optimizations"""
