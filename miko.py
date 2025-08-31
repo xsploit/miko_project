@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 AI VTuber with VRM WebSocket Integration
-Includes VRM animation triggers via WebSocket
+Includes VRM animation triggers via WebSocket cum
 """
 
 import subprocess
