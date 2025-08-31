@@ -215,8 +215,7 @@ class LLMInterface:
                     
         except Exception as e:
             print(f"LLM Streaming Error: {e}")
-            personality = self.config.load_personality()
-            yield personality.get("error_message", "Sorry! Something went wrong with my brain!")
+            yield "Sorry! Something went wrong with my brain!"
     
     @staticmethod
     def check_ollama():
