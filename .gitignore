@@ -209,3 +209,11 @@ dist/MikoVTuber/_internal/websockets-15.0.1.dist-info/top_level.txt
 dist/MikoVTuber/_internal/websockets-15.0.1.dist-info/WHEEL
 dist/MikoVTuber/_internal/yaml/_yaml.cp310-win_amd64.pyd
 dist/MikoVTuber/_internal/yarl/_quoting_c.cp310-win_amd64.pyd
+modules/__pycache__/config.cpython-310.pyc
+modules/__pycache__/llm.cpython-310.pyc
+modules/__pycache__/tts.cpython-310.pyc
+modules/__pycache__/vtuber.cpython-310.pyc
+modules/__pycache__/config.cpython-310.pyc
+modules/__pycache__/llm.cpython-310.pyc
+modules/__pycache__/tts.cpython-310.pyc
+modules/__pycache__/vtuber.cpython-310.pyc

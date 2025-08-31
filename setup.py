@@ -15,7 +15,7 @@ from PyQt6.QtWidgets import (
     QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, 
     QGridLayout, QLabel, QLineEdit, QTextEdit, QComboBox, QPushButton,
     QGroupBox, QTextEdit, QFileDialog, QMessageBox, QScrollArea,
-    QFrame, QSizePolicy, QSpacerItem, QCheckBox
+    QFrame, QSizePolicy, QSpacerItem, QCheckBox, QGraphicsDropShadowEffect, QTabWidget
 )
 from PyQt6.QtCore import Qt, QThread, pyqtSignal, QTimer
 from PyQt6.QtGui import QFont, QPalette, QColor, QIcon, QPixmap, QTextCursor
@@ -34,23 +34,31 @@ class ModernButton(QPushButton):
         self.setup_styles()
     
     def setup_styles(self):
-        self.setStyleSheet(f"""
-            QPushButton {{
-                background-color: {self.primary_color};
-                color: white;
-                border: none;
-                border-radius: 6px;
-                padding: 8px 16px;
-                font-size: 12px;
+        # Side-panel inspired: flat, neutral, compact
+        self.setStyleSheet("""
+            QPushButton {
+                background-color: #1b2130;
+                color: #e8eaed;
+                border: 1px solid #2a2f3a;
+                border-radius: 8px;
+                padding: 8px 12px;
+                font-size: 11px;
                 font-weight: 600;
                 min-height: 16px;
-            }}
-            QPushButton:hover {{
-                background-color: {self.hover_color};
-            }}
-            QPushButton:pressed {{
-                background-color: {self.hover_color};
-            }}
+            }
+            QPushButton:hover {
+                background-color: #202636;
+                border-color: #353c48;
+            }
+            QPushButton:pressed {
+                background-color: #171c28;
+                border-color: #2a2f3a;
+            }
+            QPushButton:disabled {
+                color: #8b93a4;
+                background-color: #141923;
+                border-color: #202532;
+            }
         """)
 
 
@@ -65,20 +73,20 @@ class ModernInput(QLineEdit):
     def setup_styles(self):
         self.setStyleSheet("""
             QLineEdit {
-                background-color: #374151;
-                border: 2px solid #4b5563;
-                border-radius: 6px;
-                padding: 8px 12px;
-                color: white;
-                font-size: 12px;
-                selection-background-color: #6366f1;
+                background-color: #141923;
+                border: 1px solid #202532;
+                border-radius: 8px;
+                padding: 8px 10px;
+                color: #e8eaed;
+                font-size: 11px;
+                selection-background-color: #4b5bdc;
             }
             QLineEdit:focus {
-                border-color: #6366f1;
-                background-color: #4b5563;
+                border-color: #4b5bdc;
+                background-color: #171d28;
             }
             QLineEdit:hover {
-                border-color: #6b7280;
+                border-color: #2a3040;
             }
         """)
 
@@ -94,21 +102,21 @@ class ModernTextEdit(QTextEdit):
     def setup_styles(self):
         self.setStyleSheet("""
             QTextEdit {
-                background-color: #374151;
-                border: 2px solid #4b5563;
-                border-radius: 6px;
-                padding: 8px 12px;
-                color: white;
-                font-size: 12px;
-                selection-background-color: #6366f1;
+                background-color: #141923;
+                border: 1px solid #202532;
+                border-radius: 10px;
+                padding: 8px 10px;
+                color: #e8eaed;
+                font-size: 11px;
+                selection-background-color: #4b5bdc;
                 font-family: 'Segoe UI', sans-serif;
             }
             QTextEdit:focus {
-                border-color: #6366f1;
-                background-color: #4b5563;
+                border-color: #4b5bdc;
+                background-color: #171d28;
             }
             QTextEdit:hover {
-                border-color: #6b7280;
+                border-color: #2a3040;
             }
         """)
 
@@ -123,37 +131,37 @@ class ModernComboBox(QComboBox):
     def setup_styles(self):
         self.setStyleSheet("""
             QComboBox {
-                background-color: #374151;
-                border: 2px solid #4b5563;
-                border-radius: 6px;
-                padding: 8px 12px;
-                color: white;
-                font-size: 12px;
+                background-color: #141923;
+                border: 1px solid #202532;
+                border-radius: 8px;
+                padding: 6px 10px;
+                color: #e8eaed;
+                font-size: 11px;
                 min-height: 16px;
             }
             QComboBox:hover {
-                border-color: #6b7280;
+                border-color: #2a3040;
             }
             QComboBox:focus {
-                border-color: #6366f1;
+                border-color: #4b5bdc;
             }
             QComboBox::drop-down {
                 border: none;
-                width: 25px;
+                width: 22px;
             }
             QComboBox::down-arrow {
                 image: none;
                 border-left: 4px solid transparent;
                 border-right: 4px solid transparent;
-                border-top: 4px solid white;
+                border-top: 4px solid #e8eaed;
                 margin-right: 8px;
             }
             QComboBox QAbstractItemView {
-                background-color: #374151;
-                border: 2px solid #4b5563;
-                border-radius: 6px;
-                color: white;
-                selection-background-color: #6366f1;
+                background-color: #141923;
+                border: 1px solid #202532;
+                border-radius: 8px;
+                color: #e8eaed;
+                selection-background-color: #202636;
             }
         """)
 
@@ -167,20 +175,20 @@ class ModernGroupBox(QGroupBox):
     def setup_styles(self):
         self.setStyleSheet("""
             QGroupBox {
-                font-weight: bold;
-                font-size: 12px;
-                color: #f3f4f6;
-                border: 2px solid #4b5563;
-                border-radius: 8px;
+                font-weight: 600;
+                font-size: 11px;
+                color: #e8eaed;
+                border: 1px solid #202532;
+                border-radius: 10px;
                 margin-top: 8px;
-                padding-top: 8px;
-                background-color: #1f2937;
+                padding-top: 10px;
+                background-color: #141923;
             }
             QGroupBox::title {
                 subcontrol-origin: margin;
-                left: 12px;
+                left: 10px;
                 padding: 0 6px 0 6px;
-                color: #6366f1;
+                color: #b0b3c0;
                 font-weight: 700;
             }
         """)
@@ -241,7 +249,7 @@ class MikoSetupGUI(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("🦊 Miko AI VTuber Setup")
-        self.setGeometry(100, 100, 1400, 900)  # Wider, shorter for 4K
+        self.setGeometry(100, 100, 1024, 524)
         
         # Modern color scheme
         self.colors = {
@@ -328,22 +336,27 @@ class MikoSetupGUI(QMainWindow):
     
     def setup_ui(self):
         """Setup the main UI"""
-        central_widget = QWidget()
-        self.setCentralWidget(central_widget)
+        # Use a scroll area to avoid content clipping on smaller screens
+        scroll_area = QScrollArea()
+        scroll_area.setWidgetResizable(True)
+        self.setCentralWidget(scroll_area)
+
+        content_widget = QWidget()
+        scroll_area.setWidget(content_widget)
         
-        # Main layout - compact for 4K
-        main_layout = QVBoxLayout(central_widget)
+        # Main layout - compact and organized with tabs
+        main_layout = QVBoxLayout(content_widget)
         main_layout.setSpacing(6)  # Much smaller spacing
         main_layout.setContentsMargins(15, 15, 15, 15)  # Much smaller margins
         
         # Title section - compact
         title_layout = QHBoxLayout()  # Horizontal layout for compact title
-        title_label = QLabel("🦊 Miko AI VTuber Setup")
-        title_label.setFont(QFont("Segoe UI", 18, QFont.Weight.Bold))  # Much smaller font
+        title_label = QLabel("Miko Setup")
+        title_label.setFont(QFont("Segoe UI", 14, QFont.Weight.Bold))
         title_label.setStyleSheet(f"color: {self.colors['accent']};")
         
-        subtitle_label = QLabel("Configure your AI companion ✨")
-        subtitle_label.setFont(QFont("Segoe UI", 10))  # Much smaller font
+        subtitle_label = QLabel("Configure your AI companion")
+        subtitle_label.setFont(QFont("Segoe UI", 9))
         subtitle_label.setStyleSheet(f"color: {self.colors['text_secondary']};")
         
         title_layout.addWidget(title_label)
@@ -351,28 +364,48 @@ class MikoSetupGUI(QMainWindow):
         title_layout.addWidget(subtitle_label)
         main_layout.addLayout(title_layout)
         
-        # Create compact horizontal layout for main sections
-        main_sections_layout = QHBoxLayout()
-        main_sections_layout.setSpacing(10)
-        
-        # Left column - Personality, Audio, and Recommendations
-        left_column = QVBoxLayout()
-        left_column.setSpacing(6)
-        left_column.addWidget(self.create_personality_section())
-        left_column.addWidget(self.create_audio_section())
-        left_column.addWidget(self.create_device_recommendations_section())
-        
-        # Right column - Voice, ASR, Status, and Buttons
-        right_column = QVBoxLayout()
-        right_column.setSpacing(6)
-        right_column.addWidget(self.create_voice_section())
-        right_column.addWidget(self.create_asr_section())
-        right_column.addWidget(self.create_status_section())
-        right_column.addWidget(self.create_buttons_section())
-        
-        main_sections_layout.addLayout(left_column)
-        main_sections_layout.addLayout(right_column)
-        main_layout.addLayout(main_sections_layout)
+        # Use tabs to organize and reduce visual clutter
+        tabs = QTabWidget()
+        tabs.setTabPosition(QTabWidget.TabPosition.North)
+        tabs.setElideMode(Qt.TextElideMode.ElideRight)
+        tabs.setMovable(False)
+
+        # Tab: General (Personality + Audio)
+        general_tab = QWidget()
+        g_layout = QVBoxLayout(general_tab)
+        g_layout.setSpacing(8)
+        g_layout.addWidget(self.create_personality_section())
+        g_layout.addWidget(self.create_audio_section())
+        g_layout.addStretch()
+        tabs.addTab(general_tab, "General")
+
+        # Tab: LLM (Provider)
+        llm_tab = QWidget()
+        llm_layout = QVBoxLayout(llm_tab)
+        llm_layout.setSpacing(8)
+        llm_layout.addWidget(self.create_llm_provider_section())
+        llm_layout.addStretch()
+        tabs.addTab(llm_tab, "LLM")
+
+        # Tab: Voice (TTS + ASR)
+        voice_tab = QWidget()
+        v_layout = QVBoxLayout(voice_tab)
+        v_layout.setSpacing(8)
+        v_layout.addWidget(self.create_voice_section())
+        v_layout.addWidget(self.create_asr_section())
+        v_layout.addStretch()
+        tabs.addTab(voice_tab, "Voice")
+
+        # Tab: Status & Actions
+        system_tab = QWidget()
+        s_layout = QVBoxLayout(system_tab)
+        s_layout.setSpacing(8)
+        s_layout.addWidget(self.create_status_section())
+        s_layout.addWidget(self.create_buttons_section())
+        s_layout.addStretch()
+        tabs.addTab(system_tab, "System")
+
+        main_layout.addWidget(tabs)
     
     def create_personality_section(self):
         """Create personality configuration section"""
@@ -421,6 +454,140 @@ class MikoSetupGUI(QMainWindow):
         
         return group
     
+    def create_llm_provider_section(self):
+        """Create LLM provider configuration section"""
+        group = ModernGroupBox("🤖 LLM Provider")
+        layout = QGridLayout(group)
+        layout.setSpacing(4)
+        layout.setContentsMargins(8, 10, 8, 8)
+
+        # Provider selection
+        provider_label = QLabel("Provider:")
+        provider_label.setStyleSheet(f"color: {self.colors['text_primary']}; font-weight: bold; font-size: 12px;")
+        self.provider_combo = ModernComboBox(200)
+        self.provider_combo.addItems(["ollama", "openai", "openrouter", "gemini", "custom"])
+        current_provider = (self.yaml_config.get('provider') if hasattr(self, 'yaml_config') else None) or 'ollama'
+        self.provider_combo.setCurrentText(current_provider)
+        self.provider_combo.currentTextChanged.connect(self.on_provider_changed)
+        layout.addWidget(provider_label, 0, 0)
+        layout.addWidget(self.provider_combo, 0, 1)
+
+        providers = self.yaml_config.get('providers', {}) if hasattr(self, 'yaml_config') else {}
+        cfg = providers.get(current_provider, {})
+
+        # Base URL
+        base_url_label = QLabel("Base URL:")
+        base_url_label.setStyleSheet(f"color: {self.colors['text_primary']}; font-weight: bold; font-size: 12px;")
+        self.base_url_input = ModernInput("", 300)
+        self.base_url_input.setText(cfg.get('base_url', 'http://localhost:11434/v1'))
+        self.base_url_input.textChanged.connect(lambda v: self.on_provider_field_changed('base_url', v))
+        layout.addWidget(base_url_label, 1, 0)
+        layout.addWidget(self.base_url_input, 1, 1)
+
+        # API Key
+        api_key_label = QLabel("API Key:")
+        api_key_label.setStyleSheet(f"color: {self.colors['text_primary']}; font-weight: bold; font-size: 12px;")
+        self.api_key_input = ModernInput("", 300)
+        self.api_key_input.setText(cfg.get('api_key', ''))
+        self.api_key_input.textChanged.connect(lambda v: self.on_provider_field_changed('api_key', v))
+        layout.addWidget(api_key_label, 2, 0)
+        layout.addWidget(self.api_key_input, 2, 1)
+
+        # Model
+        model_label = QLabel("Model:")
+        model_label.setStyleSheet(f"color: {self.colors['text_primary']}; font-weight: bold; font-size: 12px;")
+        self.provider_model_input = ModernInput("", 300)
+        self.provider_model_input.setText(cfg.get('model', ''))
+        self.provider_model_input.textChanged.connect(lambda v: self.on_provider_field_changed('model', v))
+        layout.addWidget(model_label, 3, 0)
+        layout.addWidget(self.provider_model_input, 3, 1)
+
+        # Params (temperature, top_p, max_tokens)
+        params = cfg.get('params', {})
+        temp_label = QLabel("Temperature:")
+        temp_label.setStyleSheet(f"color: {self.colors['text_primary']}; font-weight: bold; font-size: 12px;")
+        self.temp_input = ModernInput("", 80)
+        self.temp_input.setText(str(params.get('temperature', 0.7)))
+        self.temp_input.textChanged.connect(lambda v: self.on_provider_param_changed('temperature', v))
+
+        top_p_label = QLabel("top_p:")
+        top_p_label.setStyleSheet(f"color: {self.colors['text_primary']}; font-weight: bold; font-size: 12px;")
+        self.top_p_input = ModernInput("", 80)
+        self.top_p_input.setText(str(params.get('top_p', 0.9)))
+        self.top_p_input.textChanged.connect(lambda v: self.on_provider_param_changed('top_p', v))
+
+        max_tokens_label = QLabel("max_tokens:")
+        max_tokens_label.setStyleSheet(f"color: {self.colors['text_primary']}; font-weight: bold; font-size: 12px;")
+        self.max_tokens_input = ModernInput("", 100)
+        self.max_tokens_input.setText(str(params.get('max_tokens', 2048)))
+        self.max_tokens_input.textChanged.connect(lambda v: self.on_provider_param_changed('max_tokens', v))
+
+        params_row = QHBoxLayout()
+        params_row.addWidget(temp_label)
+        params_row.addWidget(self.temp_input)
+        params_row.addSpacing(6)
+        params_row.addWidget(top_p_label)
+        params_row.addWidget(self.top_p_input)
+        params_row.addSpacing(6)
+        params_row.addWidget(max_tokens_label)
+        params_row.addWidget(self.max_tokens_input)
+        params_row.addStretch()
+        layout.addLayout(params_row, 4, 0, 1, 2)
+
+        return group
+
+    def on_provider_changed(self, value):
+        try:
+            if not hasattr(self, 'yaml_config'):
+                self.yaml_config = {}
+            self.yaml_config['provider'] = value
+            if 'providers' not in self.yaml_config:
+                self.yaml_config['providers'] = {}
+            if value not in self.yaml_config['providers']:
+                self.yaml_config['providers'][value] = {
+                    'api_key': '',
+                    'base_url': 'http://localhost:11434/v1' if value == 'ollama' else '',
+                    'model': ''
+                }
+            # Refresh fields from selected provider
+            cfg = self.yaml_config['providers'][value]
+            self.base_url_input.setText(cfg.get('base_url', ''))
+            self.api_key_input.setText(cfg.get('api_key', ''))
+            self.provider_model_input.setText(cfg.get('model', ''))
+        except Exception as e:
+            print(f"⚠️ Provider change error: {e}")
+
+    def on_provider_field_changed(self, key, value):
+        try:
+            provider = self.provider_combo.currentText()
+            if 'providers' not in self.yaml_config:
+                self.yaml_config['providers'] = {}
+            if provider not in self.yaml_config['providers']:
+                self.yaml_config['providers'][provider] = {}
+            self.yaml_config['providers'][provider][key] = value
+        except Exception as e:
+            print(f"⚠️ Provider field update error: {e}")
+
+    def on_provider_param_changed(self, key, value):
+        try:
+            provider = self.provider_combo.currentText()
+            if 'providers' not in self.yaml_config:
+                self.yaml_config['providers'] = {}
+            if provider not in self.yaml_config['providers']:
+                self.yaml_config['providers'][provider] = {}
+            if 'params' not in self.yaml_config['providers'][provider]:
+                self.yaml_config['providers'][provider]['params'] = {}
+            # cast numeric if possible
+            try:
+                if key == 'max_tokens':
+                    self.yaml_config['providers'][provider]['params'][key] = int(value)
+                else:
+                    self.yaml_config['providers'][provider]['params'][key] = float(value)
+            except Exception:
+                self.yaml_config['providers'][provider]['params'][key] = value
+        except Exception as e:
+            print(f"⚠️ Provider param update error: {e}")
+
     def create_audio_section(self):
         """Create audio configuration section"""
         group = ModernGroupBox("🎵 Audio Configuration")
@@ -459,47 +626,7 @@ class MikoSetupGUI(QMainWindow):
         
         return group
     
-    def create_device_recommendations_section(self):
-        """Create device recommendations section"""
-        group = ModernGroupBox("💡 Device Recommendations")
-        layout = QVBoxLayout(group)
-        layout.setSpacing(4)
-        layout.setContentsMargins(8, 10, 8, 8)
-        
-        # Simple recommendations text
-        recommendations_text = QTextEdit()
-        recommendations_text.setReadOnly(True)
-        recommendations_text.setMaximumHeight(120)
-        recommendations_text.setStyleSheet(f"""
-            QTextEdit {{
-                background-color: {self.colors['bg_light']};
-                border: 2px solid {self.colors['border']};
-                border-radius: 6px;
-                padding: 8px;
-                color: {self.colors['text_primary']};
-                font-size: 10px;
-                font-family: 'Segoe UI', sans-serif;
-            }}
-        """)
-        
-        # Static recommendations
-        rec_text = """🎤 Input Device Recommendations:
-
-1. 🎤 USB Microphone
-   Priority: High - Best for voice input quality
-
-2. 🔌 Line Input (Audio Interface)
-   Priority: Medium - Good for external audio sources
-
-3. 🎵 Built-in Microphone
-   Priority: Low - Basic functionality, may have noise
-
-💡 Tip: Choose the device that best fits your setup!"""
-        
-        recommendations_text.setPlainText(rec_text)
-        layout.addWidget(recommendations_text)
-        
-        return group
+    # Removed device recommendations section for a cleaner UI
     
 
     
@@ -788,31 +915,42 @@ class MikoSetupGUI(QMainWindow):
         """Apply dark theme to the application"""
         self.setStyleSheet(f"""
             QMainWindow {{
-                background-color: {self.colors['bg_dark']};
-                color: {self.colors['text_primary']};
+                background-color: #0e1118;
+                color: #e8eaed;
             }}
             QWidget {{
-                background-color: {self.colors['bg_dark']};
-                color: {self.colors['text_primary']};
+                background-color: #0e1118;
+                color: #e8eaed;
             }}
             QScrollArea {{
-                background-color: {self.colors['bg_dark']};
+                background-color: #0e1118;
                 border: none;
             }}
             QScrollBar:vertical {{
-                background-color: {self.colors['bg_medium']};
-                width: 12px;
-                border-radius: 6px;
+                background-color: #101521;
+                width: 10px;
+                border-radius: 5px;
             }}
             QScrollBar::handle:vertical {{
-                background-color: {self.colors['accent']};
-                border-radius: 6px;
+                background-color: #1a2232;
+                border-radius: 5px;
                 min-height: 20px;
             }}
             QScrollBar::handle:vertical:hover {{
-                background-color: {self.colors['accent_hover']};
+                background-color: #263146;
             }}
         """)
+
+    def add_shadow(self, widget: QWidget, radius: int = 24):
+        try:
+            effect = QGraphicsDropShadowEffect(self)
+            effect.setBlurRadius(radius)
+            effect.setXOffset(0)
+            effect.setYOffset(0)
+            effect.setColor(QColor(0, 0, 0, 110))
+            widget.setGraphicsEffect(effect)
+        except Exception as e:
+            print(f"⚠️ Shadow effect error: {e}")
     
     def load_yaml_config(self):
         """Load configuration from YAML file"""

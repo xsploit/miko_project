@@ -13,6 +13,7 @@ import threading
 import time
 import asyncio
 import aiohttp
+from openai import OpenAI
 import queue
 import numpy as np
 import sounddevice as sd
@@ -50,8 +51,9 @@ if not getattr(sys, "frozen", False):
 import ollama
 import websockets
 
-# Import ASR module
+# Import ASR and LLM modules
 from modules.asr import ASRManager
+from modules.llm import LLMInterface
 
 # Load YAML config
 def load_yaml_config():
@@ -584,8 +586,10 @@ class AIVTuber:
         self.playback_thread = None
         self.tts_client = None
         
-        # Use YAML config for model if available
-        self.model = get_ollama_model() if YAML_CONFIG else model
+        # Initialize multi-provider LLM interface (OpenAI-compatible)
+        default_model = get_ollama_model() if YAML_CONFIG else model
+        self.llm = LLMInterface(model=default_model)
+        self.model = self.llm.model
         print(f"🤖 Using model: {self.model}")
         
         self.enable_streaming = enable_streaming  # Toggle for streaming vs non-streaming
@@ -679,28 +683,41 @@ class AIVTuber:
         
         try:
             if self.enable_streaming:
-                # STREAMING MODE - queue sentences as they complete
+                # STREAMING MODE - prefer native Ollama stream if provider is ollama
                 print("(streaming mode)")
-                for part in ollama.chat(model=self.model, messages=self.conversation, stream=True):
-                    chunk = part['message']['content']
-                    print(chunk, end='', flush=True)
-                    response_text += chunk
-                    sentence_buffer += chunk
-                    
-                    # When we have a complete sentence, queue it for TTS
-                    if any(punct in chunk for punct in ['.', '!', '?']) and len(sentence_buffer.strip()) > 15:
-                        sentence = sentence_buffer.strip()
-                        print(f" [🎙️]", end='', flush=True)
-                        self.queue_tts(sentence)
-                        sentence_buffer = ""
+                provider = self.llm.yaml_config.get('provider', 'ollama') if self.llm.yaml_config else 'ollama'
+                if provider == 'ollama':
+                    for part in ollama.chat(model=self.model, messages=self.conversation, stream=True):
+                        chunk = part['message']['content']
+                        print(chunk, end='', flush=True)
+                        response_text += chunk
+                        sentence_buffer += chunk
+                        if any(punct in chunk for punct in ['.', '!', '?']) and len(sentence_buffer.strip()) > 15:
+                            sentence = sentence_buffer.strip()
+                            print(f" [🎙️]", end='', flush=True)
+                            self.queue_tts(sentence)
+                            sentence_buffer = ""
+                else:
+                    # OpenAI-compatible streaming via LLMInterface
+                    for chunk in self.llm.chat_openai_compatible(self.conversation, streaming=True):
+                        print(chunk, end='', flush=True)
+                        response_text += chunk
+                        sentence_buffer += chunk
+                        if any(punct in chunk for punct in ['.', '!', '?']) and len(sentence_buffer.strip()) > 15:
+                            sentence = sentence_buffer.strip()
+                            print(f" [🎙️]", end='', flush=True)
+                            self.queue_tts(sentence)
+                            sentence_buffer = ""
             else:
-                # NON-STREAMING MODE - get complete response first (PROVEN TO WORK)
+                # NON-STREAMING MODE - use native Ollama if provider is ollama, otherwise OpenAI-compatible
                 print("(non-streaming mode)")
-                response = ollama.chat(model=self.model, messages=self.conversation, stream=False)
-                response_text = response['message']['content']
+                provider = self.llm.yaml_config.get('provider', 'ollama') if self.llm.yaml_config else 'ollama'
+                if provider == 'ollama':
+                    response = ollama.chat(model=self.model, messages=self.conversation, stream=False)
+                    response_text = response['message']['content']
+                else:
+                    response_text = self.llm.chat_openai_compatible(self.conversation, streaming=False)
                 print(response_text)
-                
-                # Send complete response to TTS
                 self.queue_tts(response_text)
                     
         except Exception as e:
