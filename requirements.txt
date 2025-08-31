@@ -1,0 +1,12 @@
+ollama
+aiohttp
+sounddevice
+numpy
+requests
+websockets
+faster-whisper
+soundfile
+keyboard
+pyyaml
+openai
+PyQt6

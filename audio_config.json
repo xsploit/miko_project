@@ -1,0 +1,9 @@
+{
+  "input_device_name": "Microphone (Realtek(R) Audio)",
+  "output_device_name": "CABLE-B Input (VB-Audio Cable B)",
+  "device_index": 46,
+  "asr_enabled": true,
+  "push_to_talk_key": "shift",
+  "asr_model": "base.en",
+  "asr_device": "cpu"
+}

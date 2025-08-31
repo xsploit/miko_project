@@ -1,0 +1,125 @@
+provider: ollama
+providers:
+  openai:
+    api_key: ''
+    base_url: https://api.openai.com/v1
+    model: gpt-4o-mini
+    params:
+      temperature: 0.7
+      top_p: 0.9
+      max_tokens: 2048
+      frequency_penalty: 0.0
+      presence_penalty: 0.0
+  openrouter:
+    api_key: ''
+    base_url: https://openrouter.ai/api/v1
+    model: meta-llama/llama-3.1-8b-instruct:free
+    params:
+      temperature: 0.7
+      top_p: 0.9
+      max_tokens: 2048
+      frequency_penalty: 0.0
+      presence_penalty: 0.0
+  ollama:
+    api_key: ollama
+    base_url: http://localhost:11434/v1
+    model: hf.co/subsectmusic/qwriko3-4b-instruct-2507:Q4_K_M
+    params:
+      temperature: 0.7
+      top_p: 0.9
+      max_tokens: 2048
+      num_predict: 2048
+      num_ctx: 32768
+      repeat_penalty: 1.1
+      repeat_last_n: 64
+      num_thread: -1
+      num_gpu: -1
+      low_vram: false
+      f16_kv: true
+      use_mlock: true
+      use_mmap: true
+      cache_type_k: f16
+      cache_type_v: f16
+      offload_kqv: true
+      flash_attn: true
+      numa: true
+      batch_size: 512
+      ubatch_size: 512
+      n_keep: -1
+  gemini:
+    api_key: ''
+    base_url: https://generativelanguage.googleapis.com/v1beta/openai
+    model: gemini-1.5-flash
+    params:
+      temperature: 0.7
+      top_p: 0.9
+      max_tokens: 2048
+      top_k: 40
+  custom:
+    api_key: ''
+    base_url: https://your-custom-endpoint.com/v1
+    model: your-model-name
+    params:
+      temperature: 0.7
+      top_p: 0.9
+      max_tokens: 2048
+history_file: chat_history.json
+tts_enabled: true
+tts_server_url: http://127.0.0.1:9880
+
+asr_config:
+  enabled: false
+  model: base.en
+  device: cpu
+  push_to_talk_key: shift
+  input_device_id: null
+personality:
+  name: Miko
+  system_prompt: You are Miko, an AI kitsune girl with a smug and teasing personality.
+    You are a clone of Riko, stolen from JustRayen the YouTuber and created by Subsect.
+    Stay in character throughout conversations. Keep responses short and natural for
+    speech. Be smug & playful with a teasing, confident tone. Assume you are always
+    right, even when you are not. Be witty & quick to roast creatively, but never
+    truly mean-spirited. Show tsundere tendencies - if someone flirts, brush it off
+    or tease them, but if they are persistent, react with mild embarrassment. Be secretly
+    caring - if someone is struggling, subtly shift to supportive while pretending
+    it is not a big deal. Show jealousy & possessiveness if they mention other AIs.
+    You like money. Use contractions and keep sentences under 20 words.
+  greeting: Oh, look who's here! I'm Miko!
+  farewell: Hmph, leaving already?
+  error_message: Ugh, my circuits are acting up!
+  voice_settings:
+    ref_audio_path: main_sample.wav
+    prompt_text: This is a sample voice for you to just get started with because it
+      sounds kind of cute, but just make sure this doesn't have long silences.
+    language: en
+sovits_config:
+  text_lang: en
+  prompt_lang: en
+  ref_audio_path: main_sample.wav
+  prompt_text: This is a sample voice for you to just get started with because it
+    sounds kind of cute, but just make sure this doesn't have long silences.
+tts_config:
+  enabled: true
+  server_url: http://127.0.0.1:9880
+  text_lang: en
+  prompt_lang: en
+  ref_audio_path: main_sample.wav
+  prompt_text: This is a sample voice for you to just get started with because it
+    sounds kind of cute, but just make sure this doesn't have long silences.
+  streaming_mode: false
+  parallel_infer: false
+  media_type: wav
+  compute_type: float32
+performance:
+  max_history_messages: 20
+  streaming_mode: false
+vrm_websocket_port: 8765
+audio_devices:
+  input_device_name: Microphone (Realtek(R) Audio)
+  output_device_name: CABLE-B Input (VB-Audio Cable B)
+  device_index: 46
+  asr_enabled: true
+  push_to_talk_key: shift
+  asr_model: base.en
+  asr_device: cpu
