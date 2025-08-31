@@ -2,6 +2,8 @@
 """
 AI VTuber with VRM WebSocket Integration
 Includes VRM animation triggers via WebSocket cum
+
+
 """
 
 import subprocess
@@ -42,7 +44,8 @@ def runtime_install(package):
         print(f"❌ Failed to install {package}: {e}")
         return False
 
-auto_install()
+if not getattr(sys, "frozen", False):
+    auto_install()
 
 import ollama
 import websockets
@@ -646,8 +649,8 @@ class AIVTuber:
         self.tts_worker_thread.start()
         print("🔊 TTS worker thread started")
         
-        # Welcome message from YAML or fallback
-        welcome = personality.get('greeting', f"Hi everyone! I'm {vtuber_name}, your AI VTuber! Ready to chat!")
+        # Force a fixed welcome TTS for testing (ignore YAML greeting)
+        welcome = "Hello! This is a test of the TTS system."
         print(f"🎭 {vtuber_name}: {welcome}")
         print("🎙️ Speaking welcome message...")
         self.queue_tts(welcome)
